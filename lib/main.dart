@@ -21,6 +21,7 @@ class MyHomePage extends StatelessWidget {
         title: Text('Manager'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Card(
             child: Container(
