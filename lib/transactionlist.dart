@@ -1,15 +1,14 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:manager/transction.dart';
 
 class TransactionList extends StatelessWidget {
-
   final List<Trasacation> _transaction = [
     Trasacation(
-    id: 't1',
-    title: 'New Shoes',
-    amount: 98455,
-    date: DateTime.now(),
-  ),
+      id: 't1',
+      title: 'New Shoes',
+      amount: 98455,
+      date: DateTime.now(),
+    ),
     Trasacation(
       id: 't2',
       title: 'New Pc',
