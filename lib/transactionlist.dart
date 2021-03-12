@@ -1,24 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:manager/transction.dart';
 
 class TransactionList extends StatelessWidget {
-  final List<Trasacation> _transaction = [
-    Trasacation(
-      id: 't1',
-      title: 'New Shoes',
-      amount: 98455,
-      date: DateTime.now(),
-    ),
-    Trasacation(
-      id: 't2',
-      title: 'New Pc',
-      amount: 12200,
-      date: DateTime.now(),
-    ),
-  ];
-
+  final List<Trasacation> transactions;
+   TransactionList(this.transactions);
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Column(
+      children: transactions.map(
+        (tx) {
+          return Card(
+            child: Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.purple,
+                      width: 2,
+                    ),
+                  ),
+                  child: Text(
+                    tx.amount.toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.purple,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tx.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      DateFormat('dd/MM/yyyy').format(tx.date),
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ).toList(),
+    );
   }
 }
