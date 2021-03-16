@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'package:manager/usertransction.dart';
+import 'package:manager/chart.dart';
+import 'package:manager/newtransaction.dart';
+import 'package:manager/transactionlist.dart';
 
 import 'transction.dart';
 
@@ -12,36 +13,109 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: MyHomePage(),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+        fontFamily: 'Roboto',
+        textTheme: ThemeData
+            .light()
+            .textTheme
+            .copyWith(
+          title: TextStyle(
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final List<Trasacation> transactions = [];
+
   final titleController = TextEditingController();
   final amountController = TextEditingController();
+  final List<Trasacation> _transaction = [
+    // Trasacation(
+    //   id: 't1',
+    //   title: 'New Shoes',
+    //   amount: 98455,
+    //   date: DateTime.now(),
+    // ),
+    // Trasacation(
+    //   id: 't2',
+    //   title: 'New Pc',
+    //   amount: 12200,
+    //   date: DateTime.now(),
+    // ),
+  ];
+
+  List<Trasacation> get _recentTransaction {
+    return _transaction.where((tx) {
+      return tx.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
+
+  void _addTransaction(String tittle, double amount) {
+    final newTx = Trasacation(
+      title: tittle,
+      amount: amount,
+      date: DateTime.now(),
+      id: DateTime.now().toString(),
+    );
+    setState(() {
+      _transaction.add(newTx);
+    });
+  }
+
+  void startAddNewTransaction(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(_addTransaction),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Manager'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => startAddNewTransaction(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.blue,
-                elevation: 5,
-                child: Text('Chart area'),
-              ),
-            ),
-            UserTransaction(),
+            Chart(_recentTransaction),
+            TransactionList(_transaction)
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => startAddNewTransaction(context),
       ),
     );
   }
