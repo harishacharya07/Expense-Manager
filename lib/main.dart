@@ -17,15 +17,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
         fontFamily: 'Roboto',
-        textTheme: ThemeData
-            .light()
-            .textTheme
-            .copyWith(
-          title: TextStyle(
-            fontFamily: 'Roboto',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
       ),
     );
   }
@@ -41,20 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final titleController = TextEditingController();
   final amountController = TextEditingController();
-  final List<Trasacation> _transaction = [
-    // Trasacation(
-    //   id: 't1',
-    //   title: 'New Shoes',
-    //   amount: 98455,
-    //   date: DateTime.now(),
-    // ),
-    // Trasacation(
-    //   id: 't2',
-    //   title: 'New Pc',
-    //   amount: 12200,
-    //   date: DateTime.now(),
-    // ),
-  ];
+  final List<Trasacation> _transaction = [];
 
   List<Trasacation> get _recentTransaction {
     return _transaction.where((tx) {
@@ -93,22 +77,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: Text('Manager'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => startAddNewTransaction(context),
+        ),
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Manager'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => startAddNewTransaction(context),
-          ),
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Chart(_recentTransaction),
-            TransactionList(_transaction)
+            Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height) *
+                  0.4,
+              child: Chart(_recentTransaction),
+            ),
+            Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.6,
+              child: TransactionList(transactions),
+            )
           ],
         ),
       ),
