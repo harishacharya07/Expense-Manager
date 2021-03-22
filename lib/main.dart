@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:manager/chart.dart';
 import 'package:manager/newtransaction.dart';
 import 'package:manager/transactionlist.dart';
@@ -6,6 +9,11 @@ import 'package:manager/transactionlist.dart';
 import 'transction.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
+
   runApp(MyApp());
 }
 
@@ -39,6 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   final List<Trasacation> _transaction = [];
+
+  bool showChart = false;
 
   List<Trasacation> get _recentTransaction {
     return _transaction.where((tx) {
@@ -77,6 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandScape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text('Manager'),
       actions: <Widget>[
@@ -92,27 +104,44 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height) *
-                  0.4,
-              child: Chart(_recentTransaction),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Show Chart'),
+                Switch(
+                  value: showChart,
+                  onChanged: (val) {
+                    setState(() {
+                      showChart = val;
+                    });
+                  },
+                ),
+              ],
             ),
-            Container(
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  0.6,
-              child: TransactionList(transactions),
-            )
+            showChart
+                ? Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height) *
+                        0.4,
+                    child: Chart(_recentTransaction),
+                  )
+                : Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.6,
+                    child: TransactionList(transactions),
+                  ),
           ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => startAddNewTransaction(context),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => startAddNewTransaction(context),
+            ),
     );
   }
 }
